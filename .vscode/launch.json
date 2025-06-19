@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "C/C++: Debug Apple Game", // 이 디버그 구성의 이름입니다. 원하는 대로 설정하세요.
+            "type": "cppdbg",                   // C/C++ 디버거 타입 (gdb 또는 lldb)
+            "request": "launch",                // 디버거를 시작(launch)할 것인지 연결(attach)할 것인지
+            "program": "${workspaceFolder}/app",// 실행할 프로그램의 경로. Makefile의 TARGET과 일치해야 합니다.
+            "args": [],                         // 프로그램에 전달할 커맨드 라인 인자 (필요하다면 여기에 추가)
+            "stopAtEntry": false,               // 프로그램 시작 시점에서 자동 정지 여부. true로 하면 main 함수 시작 시 정지합니다.
+            "cwd": "${workspaceFolder}",        // 프로그램이 실행될 작업 디렉토리
+            "environment": [],                  // 프로그램 실행 환경 변수 (필요하다면 추가)
+            "externalConsole": false,           // true로 설정하면 별도의 터미널 창에서 프로그램이 실행됩니다.
+                                                // false로 설정하면 VS Code의 통합 터미널(Debug Console)을 사용합니다.
+            "MIMode": "gdb",                    // 사용할 디버거 백엔드 (Linux/WSL에서는 gdb)
+            "miDebuggerPath": "/usr/bin/gdb",    // gdb 실행 파일의 경로 (환경에 따라 다를 수 있음)
+            "setupCommands": [                  // GDB 초기 설정 명령어
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing", // STL 컨테이너(vector 등)를 보기 좋게 출력하도록 설정
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel", // 어셈블리 보기를 Intel 문법으로 설정 (선택 사항)
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build debug"
+        }
+    ]
+}
