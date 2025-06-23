@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Apple Game Solver",
+  "version": "1.0",
+  "description": "사과 게임 자동 풀이 확장 프로그램",
+  
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Apple Game Solver",
+    "default_icon": {
+      "16": "icons/apple.svg",
+      "32": "icons/apple.svg",
+      "48": "icons/apple.svg",
+      "128": "icons/apple.svg"
+    }
+  },
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": ["injected_script.js", "app.js", "app.wasm"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://www.gamesaien.com/game/fruit_box_a/"],
+      "js": ["content.js"]
+    }
+  ],
+  
+  "icons": {
+    "16": "icons/apple.svg",
+    "32": "icons/apple.svg",
+    "48": "icons/apple.svg",
+    "128": "icons/apple.svg"
+  }
+}

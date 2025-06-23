@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
+#include <emscripten/emscripten.h>
 
 #define DEFUALT_TOP_K 70
 double COEFF_HEURESTIC = 1.0;
@@ -55,6 +56,9 @@ private:
     std::vector<std::vector<int>> possibleDrag;
 public:
     GamePlay(int x = 10, int y = 17) : height(x), width(y), myMap(x, y) {
+        updatePossibleDrag();
+    }
+    GamePlay(std::vector<std::vector<int>> map) : height(map.size()), width(map[0].size()), myMap(map) {
         updatePossibleDrag();
     }
     int loadMap(const std::string& filename) {
@@ -187,13 +191,18 @@ public:
     void displayMap() {
         myMap.displayMap();
     }
-    void displayHigestDrag() {
+    void displayHighestDrag() {
         std::cout << "Highest Drag Operations: " << highestVal << std::endl;
         for (const auto& drag : highestDrag) {
             std::cout << "Drag from (" << drag[0] << ", " << drag[1] << ") to (" 
                       << drag[2] << ", " << drag[3] << ")" << std::endl;
         }
     }
+    
+    std::vector<std::vector<int>> getHighestDrag() const {
+        return highestDrag;
+    }
+
     void reset() {
         highestVal = 0;
         highestDrag.clear();
@@ -223,7 +232,7 @@ int main(int argc, char* argv[]) {
             COEFF_HEURESTIC = std::stod(argv[3]);
         }
         myPlay.startBeamSearch(topK);
-        // myPlay.displayHigestDrag();
+        // myPlay.displayHighestDrag();
         // myPlay.reset();
         // std::cout << "Starting Greedy Algorithm..." << std::endl;
         // myPlay.updatePossibleDrag();
@@ -232,6 +241,41 @@ int main(int argc, char* argv[]) {
         std::cout << "Starting Greedy Algorithm..." << std::endl;
         myPlay.startGreedy();
     }
-    myPlay.displayHigestDrag();
+    myPlay.displayHighestDrag();
     return 0;
+}
+
+extern "C" {
+    EMSCRIPTEN_KEEPALIVE
+    int* solveMap(const int map[]) {
+        std::vector<std::vector<int>> inputMap;
+        for (int i = 0; i < 10; i++) {
+            std::vector<int> row;
+            for (int j = 0; j < 17; j++) {
+                row.push_back(map[i * 17 + j]);
+            }
+            inputMap.push_back(row);
+        }
+
+        GamePlay myPlay(inputMap);
+        myPlay.startBeamSearch(DEFUALT_TOP_K);
+        std::vector<std::vector<int>> result = myPlay.getHighestDrag();
+
+        // 0번째 인덱스는 드래그 수
+        int* output = (int*)malloc((result.size()+1) * 4 * sizeof(int));
+        int index = 0;
+        output[index++] = result.size();
+        for (const auto& drag : result) {
+            output[index++] = drag[0];
+            output[index++] = drag[1];
+            output[index++] = drag[2];
+            output[index++] = drag[3];
+        }
+        return output;
+    }
+    
+    EMSCRIPTEN_KEEPALIVE
+    void freeMemory(int* ptr) {
+        free(ptr);
+    }
 }

@@ -29,7 +29,8 @@ private:
     int width;
 
 public:
-    AppleMap(int x = 10, int y = 17); 
+    AppleMap(int x = 10, int y = 17);
+    AppleMap(std::vector<std::vector<int>> map);
     void displayMap();
     int getVal(int x, int y);
     int setZero(int x1, int y1, int x2, int y2);

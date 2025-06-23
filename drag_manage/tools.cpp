@@ -21,6 +21,27 @@ AppleMap::AppleMap(int x, int y)
     }
 }
 
+AppleMap::AppleMap(std::vector<std::vector<int>> map)
+    : randomEngine(std::random_device{}()),
+      distrib(1, 9)
+{
+    height = map.size();
+    if (height == 0) {
+        width = 0;
+        return;
+    }
+    width = map[0].size();
+    mapData = map;
+    sumTable = SumTable(height, width);
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
+            if (mapData[i][j] != 0) {
+                sumTable.update(i, j, mapData[i][j]);
+            }
+        }
+    }
+}
+
 void AppleMap::displayMap() {
     std::cout << "\n--- Map Contents ---" << std::endl;
     for (const auto& row : mapData) {
