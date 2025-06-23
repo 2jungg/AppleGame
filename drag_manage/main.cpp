@@ -261,8 +261,7 @@ extern "C" {
         myPlay.startBeamSearch(DEFUALT_TOP_K);
         std::vector<std::vector<int>> result = myPlay.getHighestDrag();
 
-        // 0번째 인덱스는 드래그 수
-        int* output = (int*)malloc((result.size()+1) * 4 * sizeof(int));
+        int* output = (int*)malloc((result.size() * 4 + 1) * sizeof(int));
         int index = 0;
         output[index++] = result.size();
         for (const auto& drag : result) {
@@ -272,10 +271,5 @@ extern "C" {
             output[index++] = drag[3];
         }
         return output;
-    }
-    
-    EMSCRIPTEN_KEEPALIVE
-    void freeMemory(int* ptr) {
-        free(ptr);
     }
 }

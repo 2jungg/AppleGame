@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
         saveExtensionState(newState);
         updateUI();
         
-        // 상태 메시지 임시 표시
         const tempMessage = newState ? '자동 풀이 시작!' : '자동 풀이 중지!';
         statusEl.textContent = tempMessage;
         

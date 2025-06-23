@@ -12,10 +12,13 @@ CFLAGS_RELEASE := -Wall -Wextra -std=c++17 -O2
 CFLAGS_DEBUG := -Wall -Wextra -std=c++17 -g -O0
 
 # JS 모드
-CFLAGS_JS = -Wall -std=c++17 -I./include -s WASM=1 -s MODULARIZE=1 -s EXPORT_ES6=1 -O3
+CFLAGS_JS = -Wall -std=c++17 -I./include -s WASM=1 -s MODULARIZE=1 -s EXPORT_ES6=1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=1 -O3
 
-EXPORTED_FUNCTIONS = "['_solveMap', '_freeMemory']"
-EM_FLAGS = -s EXPORTED_FUNCTIONS=$(EXPORTED_FUNCTIONS)
+EXPORTED_FUNCTIONS = ['_solveMap', '_malloc', '_free']
+EM_FLAGS = -s EXPORTED_FUNCTIONS="$(EXPORTED_FUNCTIONS)"
+EM_FLAGS += -s EXPORTED_RUNTIME_METHODS='["ccall","cwrap","getValue","setValue"]'
+
+EMSDK_ROOT_PATH := /home/jungg-ubuntu/emsdk
 
 # 기본적으로 Release 모드를 사용하도록 설정
 # make debug 를 실행하면 DEBUG=1이 되고 CFLAGS가 CFLAGS_DEBUG로 설정됩니다.
@@ -38,7 +41,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET) -f $(TARGET).js $*.wasm
+	rm -f $(OBJS) $(TARGET) -f ./apple-game-solver/$(TARGET).js ./apple-game-solver/*.wasm
 
 # 디버그 빌드를 위한 특별한 타겟
 debug:
@@ -47,6 +50,7 @@ debug:
 js: $(TARGET).js
 
 $(TARGET).js: $(SRCS)
-	$(CXX) $(CFLAGS_JS) $(EM_FLAGS) $(SRCS) -o $(TARGET).js
-	@echo "JavaScript build complete: $(TARGET).js"
+	cd $(EMSDK_ROOT_PATH) && . ./emsdk_env.sh && cd - && \
+	$(CXX) $(CFLAGS_JS) $(EM_FLAGS) $(SRCS) -o ./apple-game-solver/$(TARGET).js
+
 .PHONY: all clean debug js
