@@ -4,8 +4,8 @@
 #include <fstream>
 #include <sstream>
 
-#define DEFUALT_TOP_K 60
-double COEFF_HEURESTIC = 0.8;
+#define DEFUALT_TOP_K 70
+double COEFF_HEURESTIC = 1.0;
 
 struct GameState {
     AppleMap map;
