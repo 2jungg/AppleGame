@@ -18,7 +18,7 @@ else
     CFLAGS := $(CFLAGS_RELEASE)
 endif
 
-SRCS := $(wildcard *.cpp)
+SRCS := $(wildcard ./drag_manage/*.cpp)
 OBJS := $(SRCS:.cpp=.o)
 TARGET := app
 

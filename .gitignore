@@ -1,0 +1,7 @@
+.vscode/
+*.o
+*.out
+app
+test*
+*.txt
+venv/
